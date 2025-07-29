@@ -61,7 +61,7 @@ pipeline {
                     }
                 }
             }
-        }
+        } 
 
         stage('Send SNS Notification') {
             steps {
