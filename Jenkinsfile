@@ -48,7 +48,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('DevOps-ECS-Project/terraform') {
-                    withCredentials([[
+                    withCredentials([[ 
                         $class: 'AmazonWebServicesCredentialsBinding',
                         credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe'
                     ]]) {
@@ -57,6 +57,47 @@ pipeline {
                         aws sts get-caller-identity
                         terraform init
                         terraform apply -auto-approve
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Send SNS Notification') {
+            steps {
+                dir('DevOps-ECS-Project/terraform') {
+                    withCredentials([[ 
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe'
+                    ]]) {
+                        sh '''
+                        echo "Sending SNS notification..."
+                        export AWS_DEFAULT_REGION=us-east-1
+                        TOPIC_ARN=$(terraform output -raw sns_topic_arn)
+
+                        aws sns publish \
+                          --topic-arn "$TOPIC_ARN" \
+                          --subject "ECS ci Status" \
+                          --message " build test i completed and also uploaded docker image to jfrog artifactory."
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Destroy SNS Resources') {
+            steps {
+                dir('DevOps-ECS-Project/terraform') {
+                    withCredentials([[ 
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe'
+                    ]]) {
+                        sh '''
+                        echo "Destroying SNS resources..."
+                        terraform destroy \
+                          -target=aws_sns_topic.deployment_topic \
+                          -target=aws_sns_topic_subscription.email_sub \
+                          -auto-approve
                         '''
                     }
                 }
