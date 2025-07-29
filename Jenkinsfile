@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "devops-ecs-app"
-        REPO = "your-jfrog-domain.jfrog.io/devops-docker"  // Update this to your actual JFrog Docker repo
+        REPO = "http://172.183.97.211:8082/artifactory/DevOps-local-generic/"  // Update this to your actual JFrog Docker repo
     }
 
     stages {
