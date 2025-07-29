@@ -78,7 +78,7 @@ pipeline {
                         aws sns publish \
                           --topic-arn "$TOPIC_ARN" \
                           --subject "ECS CI Status" \
-                          --message " The build and test process has been successfully completed. Kindly approve the deployment."
+                          --message "The build and test process has been successfully completed. Kindly approve the deployment."
                         '''
                     }
                 }
@@ -98,6 +98,30 @@ pipeline {
                           -target=aws_sns_topic.deployment_topic \
                           -target=aws_sns_topic_subscription.email_sub \
                           -auto-approve
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Manual Approval') {
+            steps {
+                script {
+                    input message: "Proceed to deploy on ECS?", ok: "Deploy"
+                }
+            }
+        }
+
+        stage('ECS Deployment') {
+            steps {
+                dir('DevOps-ECS-Project/terraform') {
+                    withCredentials([[ 
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'b2c6dbff-cb84-49c8-a27e-ade35fc01984'
+                    ]]) {
+                        sh '''
+                        echo "Deploying to ECS..."
+                        terraform apply -auto-approve
                         '''
                     }
                 }
