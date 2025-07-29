@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "devops-ecs-app"
+        REPO = "http://172.183.97.211:8082/artifactory/DevOps-local-generic/"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Devtools-Prajna/DevOps.git'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'python3 -m py_compile app.py'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Push to JFrog') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: '297d4d4e-4f3f-411c-b57c-3eb87950bc4e', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD your-jfrog-domain.jfrog.io
+                    docker tag $IMAGE_NAME $REPO/$IMAGE_NAME:latest
+                    docker push $REPO/$IMAGE_NAME:latest
+                    """
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir('terraform') {
+                    withCredentials([string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_ACCESS_KEY_ID'),
+                                     string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                        terraform init
+                        terraform apply -auto-approve
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}
