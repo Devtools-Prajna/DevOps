@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "devops-ecs-app"
-        REPO = "http://172.183.97.211:8082/artifactory/data-devin-local-docker/"  // Update this to your actual JFrog Docker repo
+        REPO = "http://172.183.97.211:8082/artifactory/data-devin-local-docker/"
     }
 
     stages {
@@ -31,7 +31,11 @@ pipeline {
 
         stage('Push to JFrog') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '297d4d4e-4f3f-411c-b57c-3eb87950bc4e', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: '297d4d4e-4f3f-411c-b57c-3eb87950bc4e',
+                    usernameVariable: 'USERNAME',
+                    passwordVariable: 'PASSWORD'
+                )]) {
                     sh """
                     docker login -u $USERNAME -p $PASSWORD http://172.183.97.211:8082/
                     docker tag $IMAGE_NAME 172.183.97.211:8082/data-devin-local-docker/$IMAGE_NAME:$IMAGE_NAME
@@ -44,11 +48,13 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('DevOps-ECS-Project/terraform') {
-                    withCredentials([
-                        string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_ACCESS_KEY_ID'),
-                        string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_SECRET_ACCESS_KEY')
-                    ]) {
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe'
+                    ]]) {
                         sh '''
+                        echo "Using AWS credentials"
+                        aws sts get-caller-identity
                         terraform init
                         terraform apply -auto-approve
                         '''
