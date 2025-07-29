@@ -55,7 +55,7 @@ pipeline {
                         sh '''
                         echo "Using AWS credentials"
                         aws sts get-caller-identity
-                        terraform init -input=true
+                        terraform init 
                         terraform apply -auto-approve
                         '''
                     }
