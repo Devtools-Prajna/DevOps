@@ -50,7 +50,7 @@ pipeline {
                 dir('DevOps-ECS-Project/terraform') {
                     withCredentials([[ 
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe'
+                        credentialsId: 'b2c6dbff-cb84-49c8-a27e-ade35fc01984'
                     ]]) {
                         sh '''
                         echo "Using AWS credentials"
@@ -68,7 +68,7 @@ pipeline {
                 dir('DevOps-ECS-Project/terraform') {
                     withCredentials([[ 
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe'
+                        credentialsId: 'b2c6dbff-cb84-49c8-a27e-ade35fc01984'
                     ]]) {
                         sh '''
                         echo "Sending SNS notification..."
@@ -90,7 +90,7 @@ pipeline {
                 dir('DevOps-ECS-Project/terraform') {
                     withCredentials([[ 
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe'
+                        credentialsId: 'b2c6dbff-cb84-49c8-a27e-ade35fc01984'
                     ]]) {
                         sh '''
                         echo "Destroying SNS resources..."
