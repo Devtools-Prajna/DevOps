@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "devops-ecs-app"
-        REPO = "http://172.183.97.211:8082/artifactory/DevOps-local-generic"
+        REPO = "your-jfrog-domain.jfrog.io/devops-docker"  // Update this to your actual JFrog Docker repo
     }
 
     stages {
@@ -15,13 +15,17 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'python3 -m py_compile app.py'
+                dir('DevOps-ECS-Project') {
+                    sh 'python3 -m py_compile app.py'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                dir('DevOps-ECS-Project') {
+                    sh 'docker build -t $IMAGE_NAME .'
+                }
             }
         }
 
@@ -39,7 +43,7 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('terraform') {
+                dir('DevOps-ECS-Project/terraform') {
                     withCredentials([
                         string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_ACCESS_KEY_ID'),
                         string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_SECRET_ACCESS_KEY')
