@@ -95,8 +95,8 @@ pipeline {
                         sh '''
                         echo "Destroying SNS resources..."
                         terraform destroy \
-                          -target=aws_sns_topic.deployment_topic \
-                          -target=aws_sns_topic_subscription.email_sub \
+                          -target=aws_sns_topic.notification_topic \
+                          -target=aws_sns_topic_subscription.email_target \
                           -auto-approve
                         '''
                     }
