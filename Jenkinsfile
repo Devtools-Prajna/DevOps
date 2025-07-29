@@ -77,8 +77,8 @@ pipeline {
 
                         aws sns publish \
                           --topic-arn "$TOPIC_ARN" \
-                          --subject "ECS ci Status" \
-                          --message " build test i completed and also uploaded docker image to jfrog artifactory."
+                          --subject "ECS CI Status" \
+                          --message " The build and test process has been successfully completed. Kindly approve the deployment."
                         '''
                     }
                 }
