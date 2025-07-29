@@ -34,8 +34,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: '297d4d4e-4f3f-411c-b57c-3eb87950bc4e', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
                     docker login -u $USERNAME -p $PASSWORD http://172.183.97.211:8082/
-                    docker tag $IMAGE_NAME 172.183.97.211:8081/data-devin-local-docker/$IMAGE_NAME:$IMAGE_NAME
-                    docker push 172.183.97.211:8081/data-devin-local-docker/$IMAGE_NAME:$IMAGE_NAME
+                    docker tag $IMAGE_NAME 172.183.97.211:8082/data-devin-local-docker/$IMAGE_NAME:$IMAGE_NAME
+                    docker push 172.183.97.211:8082/data-devin-local-docker/$IMAGE_NAME:$IMAGE_NAME
                     """
                 }
             }
