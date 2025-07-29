@@ -6,12 +6,12 @@ pipeline {
         REPO = "http://172.183.97.211:8082/artifactory/DevOps-local-generic/"
     }
 
-    stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Devtools-Prajna/DevOps.git'
+                git branch: 'main', url: 'https://github.com/Devtools-Prajna/DevOps.git'
             }
         }
+
 
         stage('Test') {
             steps {
