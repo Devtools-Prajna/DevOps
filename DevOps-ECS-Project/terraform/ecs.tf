@@ -1,3 +1,5 @@
+# terraform/ecs.tf
+
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "devops-ecs-cluster"
 }
@@ -10,13 +12,13 @@ resource "aws_ecs_task_definition" "app_task" {
   memory                  = "512"
   execution_role_arn      = var.execution_role_arn
 
-  container_definitions   = jsonencode([
+  container_definitions = jsonencode([
     {
-      name  = "devops-app",
-      image = var.docker_image_url,
+      name      = "devops-app"
+      image     = var.docker_image_url
       portMappings = [
         {
-          containerPort = 5000,
+          containerPort = 5000
           hostPort      = 5000
         }
       ]
@@ -37,5 +39,5 @@ resource "aws_ecs_service" "app_service" {
     security_groups  = [var.security_group_id]
   }
 
-  depends_on = [aws_ecs_cluster.ecs_cluster]
+  depends_on = [aws_ecs_task_definition.app_task]
 }
