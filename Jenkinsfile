@@ -44,7 +44,7 @@ pipeline {
                 }
             }
         }
- 
+
         stage('Terraform Apply') {
             steps {
                 dir('DevOps-ECS-Project/terraform') {
