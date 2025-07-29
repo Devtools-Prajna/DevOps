@@ -33,7 +33,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: '297d4d4e-4f3f-411c-b57c-3eb87950bc4e', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
-                    docker login -u $USERNAME -p $PASSWORD your-jfrog-domain.jfrog.io
+                    docker login -u $USERNAME -p $PASSWORD http://172.183.97.211:8082/
                     docker tag $IMAGE_NAME $REPO/$IMAGE_NAME:latest
                     docker push $REPO/$IMAGE_NAME:latest
                     """
