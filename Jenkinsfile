@@ -77,18 +77,10 @@ pipeline {
 
                         aws sns publish \
                           --topic-arn "$TOPIC_ARN" \
-                          --subject "ECS CI Status" \
-                          --message "Build & test completed. Docker image uploaded to JFrog Artifactory."
+                          --subject "ECS ci Status" \
+                          --message " build test i completed and also uploaded docker image to jfrog artifactory."
                         '''
                     }
-                }
-            }
-        }
-
-        stage('Approval to Destroy SNS') {
-            steps {
-                script {
-                    input message: "Do you approve destroying the SNS resources?", ok: "Yes, destroy"
                 }
             }
         }
