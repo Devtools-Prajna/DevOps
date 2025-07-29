@@ -3,15 +3,15 @@ pipeline {
 
     environment {
         IMAGE_NAME = "devops-ecs-app"
-        REPO = "http://172.183.97.211:8082/artifactory/DevOps-local-generic/"
+        REPO = "http://172.183.97.211:8082/artifactory/DevOps-local-generic"
     }
 
+    stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/Devtools-Prajna/DevOps.git'
             }
         }
-
 
         stage('Test') {
             steps {
@@ -40,8 +40,10 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform') {
-                    withCredentials([string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_ACCESS_KEY_ID'),
-                                     string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    withCredentials([
+                        string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_ACCESS_KEY_ID'),
+                        string(credentialsId: '4e622415-e750-47fc-b631-bbd0c8c9fcbe', variable: 'AWS_SECRET_ACCESS_KEY')
+                    ]) {
                         sh '''
                         terraform init
                         terraform apply -auto-approve
